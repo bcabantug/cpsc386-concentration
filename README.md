@@ -5,7 +5,7 @@ Project 2: Simple Mutated Classic VG in Pygame
 
 Team Name: CGZL
 Team Members:
--Brian Cabantug (bcabantug@csu.fullerton.edu) CWID: 891096281
+-Brian Cabantug (bcabantug@csu.fullerton.edu) CWID: 
 -Hancheng Zhou (jerryzhhch@csu.fullerton.edu) CWID:
 -Mason Guzman-Sanchez (macegs1995@gmail.com) CWID:
 -Alexandre Lee () CWID:
