@@ -8,7 +8,7 @@ Team Members:
 -Brian Cabantug (bcabantug@csu.fullerton.edu) CWID: 
 -Hancheng Zhou (jerryzhhch@csu.fullerton.edu) CWID:
 -Mason Guzman-Sanchez (macegs1995@gmail.com) CWID:
--Alexandre Lee () CWID:
+-Alexandre Lee (al2012@csu.fullerton.edu) CWID:
 
 Introduction: This program is a game that launches a 4x4 card game of concentration using Pygame. This game allows the player to play
 either with another human player or a level 0 AI Opponent/
