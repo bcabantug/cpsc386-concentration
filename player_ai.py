@@ -20,21 +20,21 @@ def Player_vs_AI():
     pygame.event.set_blocked(pygame.MOUSEMOTION)
     # load game images
     egg1 = pygame.image.load(os.path.join(img_folder, "egg1.png")).convert()
-    egg1 = pygame.transform.scale(egg1, (90, 120))
+    egg1 = pygame.transform.scale(egg1, (80, 120))
     egg2 = pygame.image.load(os.path.join(img_folder, "egg2.png")).convert()
-    egg2 = pygame.transform.scale(egg2, (90, 120))
+    egg2 = pygame.transform.scale(egg2, (80, 120))
     egg3 = pygame.image.load(os.path.join(img_folder, "egg3.png")).convert()
-    egg3 = pygame.transform.scale(egg3, (90, 120))
+    egg3 = pygame.transform.scale(egg3, (80, 120))
     egg4 = pygame.image.load(os.path.join(img_folder, "egg4.png")).convert()
-    egg4 = pygame.transform.scale(egg4, (90, 120))
+    egg4 = pygame.transform.scale(egg4, (80, 120))
     egg5 = pygame.image.load(os.path.join(img_folder, "egg5.png")).convert()
-    egg5 = pygame.transform.scale(egg5, (90, 120))
+    egg5 = pygame.transform.scale(egg5, (80, 120))
     egg6 = pygame.image.load(os.path.join(img_folder, "egg6.png")).convert()
-    egg6 = pygame.transform.scale(egg6, (90, 120))
+    egg6 = pygame.transform.scale(egg6, (80, 120))
     egg7 = pygame.image.load(os.path.join(img_folder, "egg7.png")).convert()
-    egg7 = pygame.transform.scale(egg7, (90, 120))
+    egg7 = pygame.transform.scale(egg7, (80, 120))
     bunny = pygame.image.load(os.path.join(img_folder, "bunny.png")).convert()
-    bunny = pygame.transform.scale(bunny, (90, 120))
+    bunny = pygame.transform.scale(bunny, (80, 120))
     card_back = pygame.image.load(os.path.join(img_folder, "card.png")).convert()
     card_back = pygame.transform.scale(card_back, (80, 120))
     # load texts and scores on the screen
@@ -82,7 +82,7 @@ def Player_vs_AI():
         card_list.append(card)
 
     # setup board with 16 cards face down, and texts
-    screen.fill(white)
+    screen.fill(green)
     for coor in area_list:
         screen.blit(card_back, coor)
     screen.blit(text_player_name, (60, 100))
