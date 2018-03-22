@@ -12,6 +12,8 @@ def Player_vs_AI():
     score_ai = 0
     comp_list = []
     card_list = []
+    #event click to help with ai simulation
+    click = pygame.event.Event(pygame.MOUSEBUTTONDOWN)
 
     # initialize game
     pygame.init()
@@ -82,7 +84,7 @@ def Player_vs_AI():
         card_list.append(card)
 
     # setup board with 16 cards face down, and texts
-    screen.fill(green)
+    screen.fill((0,255,0))
     for coor in area_list:
         screen.blit(card_back, coor)
     screen.blit(text_player_name, (60, 100))
@@ -93,7 +95,10 @@ def Player_vs_AI():
     running = True
     # game loop
     while running:
-        
+        # if ai turn then simulate mouse button click to continue ai picking
+        if turn == 2:
+            print ("mousebutton")
+            pygame.event.post(click)
         # process input (events)
         for event in pygame.event.get():
             print("event loop")
@@ -121,7 +126,7 @@ def Player_vs_AI():
                                 screen.blit(text_player, (90, 150))
                                 pygame.display.update()
                                 # decrease the total fo card by 2
-                                card_left = card_left - 2                            
+                                card_left = card_left - 2
                                 # if bunny is found, get extra turn
                                 if comp_list[0].card_value == 8:
                                     print("found bunny, get extra turn")
@@ -338,12 +343,12 @@ def Player_vs_AI():
                                     print("pick card 4")
                                     screen.blit(card_list[3].image, card_list[3].card_area)
                                     card_list[3].shown = True
-                                    comp_list.append(card_list[3])   
+                                    comp_list.append(card_list[3])
                                 if area_num == 5:
                                     print("pick card 5")
                                     screen.blit(card_list[4].image, card_list[4].card_area)
                                     card_list[4].shown = True
-                                    comp_list.append(card_list[4])      
+                                    comp_list.append(card_list[4])
                                 if area_num == 6:
                                     print("pick card 6")
                                     screen.blit(card_list[5].image, card_list[5].card_area)
@@ -401,6 +406,8 @@ def Player_vs_AI():
                                     comp_list.append(card_list[15])
                             else:
                                 pass
+
+
 
         # exit game when all cards are flipped
         if card_left == 0:
