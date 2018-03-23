@@ -1,3 +1,10 @@
+#Team Name: CGZL
+#Team Members:
+#-Brian Cabantug (bcabantug@csu.fullerton.edu) CWID: 891096281
+#-Hancheng Zhou (jerryzhhch@csu.fullerton.edu) CWID: 891971798
+#-Mason Guzman-Sanchez (macegs1995@gmail.com) CWID: 890919442
+#-Alexandre Lee (al2012@csu.fullerton.edu) CWID: 892172396
+#File description: This file is the main script that runs the game and calls the functions
 import pygame
 from global_inst import *
 from player_ai import Player_vs_AI
