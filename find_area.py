@@ -1,5 +1,6 @@
 import random
 
+
 # function that find the card area which user chooses
 def find_area_num(x, y):
     if x in range(210, 290):
@@ -38,6 +39,7 @@ def find_area_num(x, y):
             return 12
         if y in range(435, 555):
             return 16
+
 
 # function takes a list and returns an area number randomly
 def random_area_num(card_list):

@@ -12,13 +12,14 @@ def Player_vs_AI():
     score_ai = 0
     comp_list = []
     card_list = []
-    #event click to help with ai simulation
+    # event click to help with ai simulation
     click = pygame.event.Event(pygame.MOUSEBUTTONDOWN)
 
     # initialize game
     pygame.init()
+    pygame.mixer.init()
     screen = pygame.display.set_mode((width, height))
-    pygame.display.set_caption("My game")
+    pygame.display.set_caption("Bunny game")
     pygame.event.set_blocked(pygame.MOUSEMOTION)
     # load game images
     egg1 = pygame.image.load(os.path.join(img_folder, "egg1.png")).convert()
@@ -39,19 +40,30 @@ def Player_vs_AI():
     bunny = pygame.transform.scale(bunny, (80, 120))
     card_back = pygame.image.load(os.path.join(img_folder, "card.png")).convert()
     card_back = pygame.transform.scale(card_back, (80, 120))
+    background = pygame.image.load(os.path.join(img_folder, "background.png")).convert()
+    background = pygame.transform.scale(background, (width, height))
+    bg_rect = background.get_rect()
+    bg_rect.center = (width / 2, height / 2)
+    text_cover = pygame.image.load(os.path.join(img_folder, "cover.png")).convert()
+    text_cover = pygame.transform.scale(text_cover, (50, 50))
     # load texts and scores on the screen
     font_name = pygame.font.SysFont("Arial", 40, True, False)
-    text_player_name = font_name.render("YOU", False, black)
+    text_player_name = font_name.render("YOU", False, red)
     text_ai_name = font_name.render("AI", False, black)
     font_score = pygame.font.SysFont("Arial", 30, True, False)
     text_player = font_score.render("0", False, black)
     text_ai = font_score.render("0", False, black)
-    text_cover = pygame.Surface((100, 50))
-    text_cover.fill(white)
     font_win = pygame.font.SysFont("Arial", 100, True, False)
     font_draw = pygame.font.SysFont("Arial", 100, True, False)
     font_lose = pygame.font.SysFont("Arial", 100, True, False)
-
+    # load sound
+    turn_sound = pygame.mixer.Sound(os.path.join(sound_folder, "turn_over.wav"))
+    turn_sound.set_volume(0.4)
+    win_sound = pygame.mixer.Sound(os.path.join(sound_folder, "win.wav"))
+    draw_sound = pygame.mixer.Sound(os.path.join(sound_folder, "draw.wav"))
+    lose_sound = pygame.mixer.Sound(os.path.join(sound_folder, "lose.wav"))
+    score_sound = pygame.mixer.Sound(os.path.join(sound_folder, "score.wav"))
+    score_sound.set_volume(0.4)
     # shuffle the cards
     random.shuffle(value_in_area)
 
@@ -84,7 +96,8 @@ def Player_vs_AI():
         card_list.append(card)
 
     # setup board with 16 cards face down, and texts
-    screen.fill((0,255,0))
+    screen.fill(white)
+    screen.blit(background, bg_rect)
     for coor in area_list:
         screen.blit(card_back, coor)
     screen.blit(text_player_name, (60, 100))
@@ -97,11 +110,9 @@ def Player_vs_AI():
     while running:
         # if ai turn then simulate mouse button click to continue ai picking
         if turn == 2:
-            print ("mousebutton")
             pygame.event.post(click)
         # process input (events)
         for event in pygame.event.get():
-            print("event loop")
             # check for closing the window
             if event.type == pygame.QUIT:
                 running = False
@@ -110,17 +121,20 @@ def Player_vs_AI():
                 if windows_focus == 1:
                     # player's turn
                     if turn == 1:
-                        print("player's turn")
+                        text_player_name = font_name.render("YOU", False, red)
+                        screen.blit(text_player_name, (60, 100))
+                        text_ai_name = font_name.render("AI", False, black)
+                        screen.blit(text_ai_name, (670, 100))
                         # if the player has selected two cards:
                         if comp_list.__len__() == 2:
-                            print("comparing two cards")
                             # compare two selected cards
+                            # if match
                             if comp_list[0].card_value == comp_list[1].card_value:
-                                print("matched")
                                 # update the score
+                                score_sound.play()
                                 score_player = score_player + 1
                                 # user white cover overlap the old score
-                                screen.blit(text_cover, (90, 150))
+                                screen.blit(text_cover, (70, 150))
                                 # show up the new score text
                                 text_player = font_score.render(str(score_player), False, black)
                                 screen.blit(text_player, (90, 150))
@@ -133,168 +147,185 @@ def Player_vs_AI():
                                     turn = 1
                                 else:
                                     turn = 2
+                            # if not match
                             else:
-                                print("missed")
                                 comp_list[0].shown = False
                                 comp_list[1].shown = False
                                 screen.blit(card_back, comp_list[0].card_area)
                                 screen.blit(card_back, comp_list[1].card_area)
+                                pygame.time.wait(500)
                                 turn = 2
                             # clear the compare list
                             comp_list.clear()
                         # if the player has NOT selected two cards:
                         else:
-                            print("pick a card")
                             if event.type == pygame.MOUSEBUTTONDOWN:
                                 pos_x, pos_y = pygame.mouse.get_pos()
-                                print(pos_x, pos_y)
                                 area_num = find_area_num(pos_x, pos_y)
-                                print(area_num)
                                 if area_num:
                                     if area_num == 1:
-                                        print("pick card 1")
                                         if not card_list[0].shown:
+                                            turn_sound.play()
                                             screen.blit(card_list[0].image, card_list[0].card_area)
                                             card_list[0].shown = True
                                             comp_list.append(card_list[0])
                                         else:
                                             pass
                                     if area_num == 2:
-                                        print("pick card 2")
                                         if not card_list[1].shown:
+                                            turn_sound.play()
+                                            pygame.time.wait(300)
                                             screen.blit(card_list[1].image, card_list[1].card_area)
                                             card_list[1].shown = True
                                             comp_list.append(card_list[1])
                                         else:
                                             pass
                                     if area_num == 3:
-                                        print("pick card 3")
                                         if not card_list[2].shown:
+                                            turn_sound.play()
+                                            pygame.time.wait(300)
                                             screen.blit(card_list[2].image, card_list[2].card_area)
                                             card_list[2].shown = True
                                             comp_list.append(card_list[2])
                                         else:
                                             pass
                                     if area_num == 4:
-                                        print("pick card 4")
                                         if not card_list[3].shown:
+                                            turn_sound.play()
+                                            pygame.time.wait(300)
                                             screen.blit(card_list[3].image, card_list[3].card_area)
                                             card_list[3].shown = True
                                             comp_list.append(card_list[3])
                                         else:
                                             pass
                                     if area_num == 5:
-                                        print("pick card 5")
                                         if not card_list[4].shown:
+                                            turn_sound.play()
+                                            pygame.time.wait(300)
                                             screen.blit(card_list[4].image, card_list[4].card_area)
                                             card_list[4].shown = True
                                             comp_list.append(card_list[4])
                                         else:
                                             pass
                                     if area_num == 6:
-                                        print("pick card 6")
                                         if not card_list[5].shown:
+                                            turn_sound.play()
+                                            pygame.time.wait(300)
                                             screen.blit(card_list[5].image, card_list[5].card_area)
                                             card_list[5].shown = True
                                             comp_list.append(card_list[5])
                                         else:
                                             pass
                                     if area_num == 7:
-                                        print("pick card 7")
                                         if not card_list[6].shown:
+                                            turn_sound.play()
+                                            pygame.time.wait(300)
                                             screen.blit(card_list[6].image, card_list[6].card_area)
                                             card_list[6].shown = True
                                             comp_list.append(card_list[6])
                                         else:
                                             pass
                                     if area_num == 8:
-                                        print("pick card 8")
                                         if not card_list[7].shown:
+                                            turn_sound.play()
+                                            pygame.time.wait(300)
                                             screen.blit(card_list[7].image, card_list[7].card_area)
                                             card_list[7].shown = True
                                             comp_list.append(card_list[7])
                                         else:
                                             pass
                                     if area_num == 9:
-                                        print("pick card 9")
                                         if not card_list[8].shown:
+                                            turn_sound.play()
+                                            pygame.time.wait(300)
                                             screen.blit(card_list[8].image, card_list[8].card_area)
                                             card_list[8].shown = True
                                             comp_list.append(card_list[8])
                                         else:
                                             pass
                                     if area_num == 10:
-                                        print("pick card 10")
                                         if not card_list[9].shown:
+                                            turn_sound.play()
+                                            pygame.time.wait(300)
                                             screen.blit(card_list[9].image, card_list[9].card_area)
                                             card_list[9].shown = True
                                             comp_list.append(card_list[9])
                                         else:
                                             pass
                                     if area_num == 11:
-                                        print("pick card 11")
                                         if not card_list[10].shown:
+                                            turn_sound.play()
+                                            pygame.time.wait(300)
                                             screen.blit(card_list[10].image, card_list[10].card_area)
                                             card_list[10].shown = True
                                             comp_list.append(card_list[10])
                                         else:
                                             pass
                                     if area_num == 12:
-                                        print("pick card 12")
                                         if not card_list[11].shown:
+                                            turn_sound.play()
+                                            pygame.time.wait(300)
                                             screen.blit(card_list[11].image, card_list[11].card_area)
                                             card_list[11].shown = True
                                             comp_list.append(card_list[11])
                                         else:
                                             pass
                                     if area_num == 13:
-                                        print("pick card 13")
                                         if not card_list[12].shown:
+                                            turn_sound.play()
+                                            pygame.time.wait(300)
                                             screen.blit(card_list[12].image, card_list[12].card_area)
                                             card_list[12].shown = True
                                             comp_list.append(card_list[12])
                                         else:
                                             pass
                                     if area_num == 14:
-                                        print("pick card 14")
                                         if not card_list[13].shown:
+                                            turn_sound.play()
+                                            pygame.time.wait(300)
                                             screen.blit(card_list[13].image, card_list[13].card_area)
                                             card_list[13].shown = True
                                             comp_list.append(card_list[13])
                                         else:
                                             pass
                                     if area_num == 15:
-                                        print("pick card 15")
                                         if not card_list[14].shown:
+                                            turn_sound.play()
+                                            pygame.time.wait(300)
                                             screen.blit(card_list[14].image, card_list[14].card_area)
                                             card_list[14].shown = True
                                             comp_list.append(card_list[14])
                                         else:
                                             pass
                                     if area_num == 16:
-                                        print("pick card 16")
                                         if not card_list[15].shown:
+                                            turn_sound.play()
+                                            pygame.time.wait(300)
                                             screen.blit(card_list[15].image, card_list[15].card_area)
                                             card_list[15].shown = True
                                             comp_list.append(card_list[15])
                                         else:
                                             pass
+
                                 else:
                                     pass
 
                     # AI's turn
                     if turn == 2:
-                        print("AI's turn")
+                        text_player_name = font_name.render("YOU", False, black)
+                        screen.blit(text_player_name, (60, 100))
+                        text_ai_name = font_name.render("AI", False, red)
+                        screen.blit(text_ai_name, (670, 100))
+
                         # if AI has selected two cards:
                         if comp_list.__len__() == 2:
-                            print("comparing two cards")
                             # compare two selected cards
                             if comp_list[0].card_value == comp_list[1].card_value:
-                                print("matched")
                                 # update the score
+                                score_sound.play()
                                 score_ai = score_ai + 1
                                 # user white cover overlap the old score
-                                screen.blit(text_cover, (680, 150))
+                                screen.blit(text_cover, (660, 150))
                                 # show up the new score text
                                 text_ai = font_score.render(str(score_ai), False, black)
                                 screen.blit(text_ai, (680, 150))
@@ -303,129 +334,145 @@ def Player_vs_AI():
                                 card_left = card_left - 2
                                 # if bunny is found, get extra turn
                                 if comp_list[0].card_value == 8:
-                                   print("found bunny, get extra turn")
-                                   turn = 2
+                                    print("found bunny, get extra turn")
+                                    turn = 2
                                 else:
                                     turn = 1
                             else:
-                                print("missed")
                                 comp_list[0].shown = False
                                 comp_list[1].shown = False
                                 screen.blit(card_back, comp_list[0].card_area)
                                 screen.blit(card_back, comp_list[1].card_area)
-                                pygame.time.wait(2000)
+                                pygame.time.wait(500)
                                 turn = 1
                             comp_list.clear()
                         # if AI has NOT selected two cards:
                         else:
                             pygame.time.wait(2000)
                             # level 0 AI (pick the two cards randomly)
-                            print("AI is choosing card")
+                            print("AI is choosing card...")
                             # GET A RANDOM CARD POSITION FROM A FUNCTION
                             area_num = random_area_num(card_list)
                             if area_num:
                                 if area_num == 1:
-                                    print("pick card 1")
+                                    turn_sound.play()
+                                    pygame.time.wait(300)
                                     screen.blit(card_list[0].image, card_list[0].card_area)
                                     card_list[0].shown = True
                                     comp_list.append(card_list[0])
                                 if area_num == 2:
-                                    print("pick card 2")
+                                    turn_sound.play()
+                                    pygame.time.wait(300)
                                     screen.blit(card_list[1].image, card_list[1].card_area)
                                     card_list[1].shown = True
                                     comp_list.append(card_list[1])
                                 if area_num == 3:
-                                    print("pick card 3")
+                                    turn_sound.play()
+                                    pygame.time.wait(300)
                                     screen.blit(card_list[2].image, card_list[2].card_area)
                                     card_list[2].shown = True
                                     comp_list.append(card_list[2])
                                 if area_num == 4:
-                                    print("pick card 4")
+                                    turn_sound.play()
+                                    pygame.time.wait(300)
                                     screen.blit(card_list[3].image, card_list[3].card_area)
                                     card_list[3].shown = True
                                     comp_list.append(card_list[3])
                                 if area_num == 5:
-                                    print("pick card 5")
+                                    turn_sound.play()
+                                    pygame.time.wait(300)
                                     screen.blit(card_list[4].image, card_list[4].card_area)
                                     card_list[4].shown = True
                                     comp_list.append(card_list[4])
                                 if area_num == 6:
-                                    print("pick card 6")
+                                    turn_sound.play()
+                                    pygame.time.wait(300)
                                     screen.blit(card_list[5].image, card_list[5].card_area)
                                     card_list[5].shown = True
                                     comp_list.append(card_list[5])
                                 if area_num == 7:
-                                    print("pick card 7")
+                                    turn_sound.play()
+                                    pygame.time.wait(300)
                                     screen.blit(card_list[6].image, card_list[6].card_area)
                                     card_list[6].shown = True
                                     comp_list.append(card_list[6])
                                 if area_num == 8:
-                                    print("pick card 8")
+                                    turn_sound.play()
+                                    pygame.time.wait(300)
                                     screen.blit(card_list[7].image, card_list[7].card_area)
                                     card_list[7].shown = True
                                     comp_list.append(card_list[7])
                                 if area_num == 9:
-                                    print("pick card 9")
+                                    turn_sound.play()
+                                    pygame.time.wait(300)
                                     screen.blit(card_list[8].image, card_list[8].card_area)
                                     card_list[8].shown = True
                                     comp_list.append(card_list[8])
                                 if area_num == 10:
-                                    print("pick card 10")
+                                    turn_sound.play()
+                                    pygame.time.wait(300)
                                     screen.blit(card_list[9].image, card_list[9].card_area)
                                     card_list[9].shown = True
                                     comp_list.append(card_list[9])
                                 if area_num == 11:
-                                    print("pick card 11")
+                                    turn_sound.play()
+                                    pygame.time.wait(300)
                                     screen.blit(card_list[10].image, card_list[10].card_area)
                                     card_list[10].shown = True
                                     comp_list.append(card_list[10])
                                 if area_num == 12:
-                                    print("pick card 12")
+                                    turn_sound.play()
+                                    pygame.time.wait(300)
                                     screen.blit(card_list[11].image, card_list[11].card_area)
                                     card_list[11].shown = True
                                     comp_list.append(card_list[11])
                                 if area_num == 13:
-                                    print("pick card 13")
+                                    turn_sound.play()
+                                    pygame.time.wait(300)
                                     screen.blit(card_list[12].image, card_list[12].card_area)
                                     card_list[12].shown = True
                                     comp_list.append(card_list[12])
                                 if area_num == 14:
-                                    print("pick card 14")
+                                    turn_sound.play()
+                                    pygame.time.wait(300)
                                     screen.blit(card_list[13].image, card_list[13].card_area)
                                     card_list[13].shown = True
                                     comp_list.append(card_list[13])
                                 if area_num == 15:
-                                    print("pick card 15")
+                                    turn_sound.play()
+                                    pygame.time.wait(300)
                                     screen.blit(card_list[14].image, card_list[14].card_area)
                                     card_list[14].shown = True
                                     comp_list.append(card_list[14])
                                 if area_num == 16:
-                                    print("pick card 16")
+                                    turn_sound.play()
+                                    pygame.time.wait(300)
                                     screen.blit(card_list[15].image, card_list[15].card_area)
                                     card_list[15].shown = True
                                     comp_list.append(card_list[15])
                             else:
                                 pass
 
-
-
         # exit game when all cards are flipped
         if card_left == 0:
             if score_player > score_ai:
-                print("YOU WIN")
-                win_window = font_win.render("YOU WIN", False, red)
+                result = font_win.render("YOU WIN", False, red)
+                win_sound.play()
             elif score_player == score_ai:
-                print("DRAW")
-                win_window = font_draw.render("DRAW", False, blue)
+                result = font_draw.render("DRAW", False, blue)
+                draw_sound.play()
             else:
-                print("YOU LOSE")
-                win_window = font_lose.render("YOU LOSE", False, black)
-            screen.blit(win_window, (200, 200))
+                result = font_lose.render("YOU LOSE", False, black)
+                lose_sound.play()
+            result_rect = result.get_rect()
+            result_rect.center = (width / 2, height / 2)
+            screen.blit(result, result_rect)
             running = False
 
         pygame.display.flip()
 
     # end loop
-    print("game will close automatically within 1 second")
-    pygame.time.wait(600)
+    pygame.time.wait(5000)
     pygame.quit()
+
+
