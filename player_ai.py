@@ -62,6 +62,8 @@ def Player_vs_AI():
     win_sound = pygame.mixer.Sound(os.path.join(sound_folder, "win.wav"))
     draw_sound = pygame.mixer.Sound(os.path.join(sound_folder, "draw.wav"))
     lose_sound = pygame.mixer.Sound(os.path.join(sound_folder, "lose.wav"))
+    bunny_sound = pygame.mixer.Sound(os.path.join(sound_folder, "bunny.wav"))
+    bunny_sound.set_volume(5)
     score_sound = pygame.mixer.Sound(os.path.join(sound_folder, "score.wav"))
     score_sound.set_volume(0.4)
     # shuffle the cards
@@ -144,6 +146,7 @@ def Player_vs_AI():
                                 # if bunny is found, get extra turn
                                 if comp_list[0].card_value == 8:
                                     print("found bunny, get extra turn")
+                                    bunny_sound.play()
                                     turn = 1
                                 else:
                                     turn = 2
@@ -335,6 +338,7 @@ def Player_vs_AI():
                                 # if bunny is found, get extra turn
                                 if comp_list[0].card_value == 8:
                                     print("found bunny, get extra turn")
+                                    bunny_sound.play()
                                     turn = 2
                                 else:
                                     turn = 1

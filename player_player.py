@@ -50,8 +50,6 @@ def Player_vs_Player():
     font_score = pygame.font.SysFont("Arial", 30, True, False)
     text_player1 = font_score.render("0", False, black)
     text_player2 = font_score.render("0", False, black)
-    text_cover = pygame.Surface((50, 50))
-    text_cover.fill(white)
     font_win = pygame.font.SysFont("Arial", 100, True, False)
     font_draw = pygame.font.SysFont("Arial", 100, True, False)
     # load sound
@@ -59,7 +57,8 @@ def Player_vs_Player():
     turn_sound.set_volume(0.4)
     win_sound = pygame.mixer.Sound(os.path.join(sound_folder, "win.wav"))
     draw_sound = pygame.mixer.Sound(os.path.join(sound_folder, "draw.wav"))
-    lose_sound = pygame.mixer.Sound(os.path.join(sound_folder, "lose.wav"))
+    bunny_sound = pygame.mixer.Sound(os.path.join(sound_folder, "bunny.wav"))
+    bunny_sound.set_volume(5)
     score_sound = pygame.mixer.Sound(os.path.join(sound_folder, "score.wav"))
     score_sound.set_volume(0.4)
 
@@ -140,6 +139,7 @@ def Player_vs_Player():
                                 # if bunny is found, get extra turn
                                 if comp_list[0].card_value == 8:
                                     print("found bunny, get extra turn")
+                                    bunny_sound.play()
                                     turn = 1
                                 else:
                                     turn = 2
@@ -328,6 +328,7 @@ def Player_vs_Player():
                                 # if bunny is found, get extra turn
                                 if comp_list[0].card_value == 8:
                                     print("found bunny, get extra turn")
+                                    bunny_sound.play()
                                     turn = 2
                                 else:
                                     turn = 1

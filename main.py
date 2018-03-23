@@ -6,7 +6,7 @@ from player_player import Player_vs_Player
 
 # print the text on the buttons
 def text_to_button(text, color, x, y, w, h, ):
-    small_font = pygame.font.SysFont("Arial", 30, False, False)
+    small_font = pygame.font.SysFont("Arial", 20, False, False)
     button_text = small_font.render(text, False, color)
     rect = button_text.get_rect()
     rect.center = (x + w / 2, y + h / 2)
@@ -80,7 +80,7 @@ if __name__ == "__main__":
     menu.blit(background, bg_rect)
     click_sound = pygame.mixer.Sound(os.path.join(sound_folder, "click.wav"))
     click_sound.set_volume(1)
-    bgm = pygame.mixer.Sound(os.path.join(sound_folder, "t.wav"))
+    bgm = pygame.mixer.Sound(os.path.join(sound_folder, "bgm.wav"))
     bgm.play(-1)
     main()
     quit()
