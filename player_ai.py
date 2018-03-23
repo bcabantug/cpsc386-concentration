@@ -119,7 +119,8 @@ def Player_vs_AI():
             screen.blit(text_player_name, (60, 100))
             text_ai_name = font_name.render("AI", False, black)
             screen.blit(text_ai_name, (670, 100))
-            pygame.time.wait(1000)
+            pygame.display.update()
+            pygame.time.wait(2000)
 
         # process input (events)
         for event in pygame.event.get():
