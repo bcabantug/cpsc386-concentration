@@ -113,6 +113,14 @@ def Player_vs_AI():
         # if ai turn then simulate mouse button click to continue ai picking
         if turn == 2:
             pygame.event.post(click)
+        #after ai turn, update highlight to reflect player turn
+        elif turn == 1:
+            text_player_name = font_name.render("YOU", False, red)
+            screen.blit(text_player_name, (60, 100))
+            text_ai_name = font_name.render("AI", False, black)
+            screen.blit(text_ai_name, (670, 100))
+            pygame.time.wait(1000)
+
         # process input (events)
         for event in pygame.event.get():
             # check for closing the window
@@ -478,5 +486,3 @@ def Player_vs_AI():
     # end loop
     pygame.time.wait(5000)
     pygame.quit()
-
-
